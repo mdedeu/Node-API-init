@@ -1,6 +1,8 @@
 const express = require('express');
 const Joi = require('joi')
 
+const Post = require('../models/Post');
+
 const router = express.Router()
 
 let photosPerPage = 10;
@@ -24,17 +26,22 @@ router.post('/upload', (req, res) => {
     if(!req.body.url || req.body.url.length < 3 ){
         res.status(400).send('Url missing')
     }
-    const photo = {
-        photo_id: photos.length + 1,
-        photo_file: req.body.url,
-        description: req.body.description,
-        user: req.body.user,
-        likes: 0,
-        page: 1,
-        timestamp: Date.now()
-    }
-    photos.push(photo)
-    res.send(photo);
+    const post = new Post({
+      url: req.body.url,
+      user: req.body.user,
+      description: req.body.description,
+      likes: 0,
+      page: 1,  
+    });
+
+    post.save().then(data => {
+        res.status(200).json(data)
+    })
+    .catch(err => {
+        res.status(500).json({ message: "Error"})
+    })
+
+    res.send(post);
 })
 
 module.exports = router
