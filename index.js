@@ -1,6 +1,8 @@
 const Joi = require('joi')
 const express = require('express');
 const app = express();
+const mongoose = require('mongoose');
+require('dotenv/config')
 
 app.use(express.json());
 let photosPerPage = 10;
@@ -52,5 +54,6 @@ app.post('/upload', (req, res) => {
 })
 //PORT
 
+mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true}, ()=> console.log("DB CONNECTION UP"))
 //const port = process.env.PORT || 3000 
 app.listen(3000, ()=> console.log(`Listening  `))
