@@ -9,7 +9,7 @@ let photosPerPage = 10;
 let photos = [];
     
 
-router.post('/upload', (req, res) => {
+router.post('/upload', async (req, res) => {
     const schema = Joi.object({
         url: Joi.string(),
         description: Joi.string().min(3).required(),
@@ -33,13 +33,13 @@ router.post('/upload', (req, res) => {
       likes: 0,
       page: 1,  
     });
-
-    post.save().then(data => {
+    
+    try{
+        const savedPost = await post.save();
         res.status(200).json(data)
-    })
-    .catch(err => {
-        res.status(500).json({ message: "Error"})
-    })
+    }catch{
+        res.status(500).json({ message: error})
+    }
 
     res.send(post);
 })
